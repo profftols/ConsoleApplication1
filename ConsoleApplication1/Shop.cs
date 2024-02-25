@@ -2,8 +2,6 @@
 {
     public class Shop
     {
-        public string Paylink { get; private set; } = "Thank you for your order!";
-        
         private Warehouse _warehouse;
         
         public Shop(Warehouse warehouse)
@@ -16,9 +14,9 @@
             return new Cart(this);
         }
 
-        public bool PutCart(Product name, int count)
+        public bool PutCart(Product product, int count)
         {
-           return _warehouse.TakeProduct(name, count);
+           return _warehouse.TakeProduct(product, count);
         }
     }
 }

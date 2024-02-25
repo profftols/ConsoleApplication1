@@ -15,18 +15,18 @@ namespace ConsoleApplication1
             warehouse.Deliver(iPhone12, 10);
             warehouse.Deliver(iPhone11, 1);
             
-            warehouse.GetAllProducts();
+            warehouse.PrintDeliverProducts();
 
             Cart cart = shop.Cart();
             
-            cart.Add(iPhone12, 4);
-            cart.Add(iPhone11, 3);
+            cart.AddShopping(iPhone12, 4);
+            cart.AddShopping(iPhone11, 3);
             
             cart.ProductsShopping();
 
-            Console.WriteLine(cart.Order().Paylink);
+            cart.Order();
 
-            cart.Add(iPhone12, 9);
+            cart.AddShopping(iPhone12, 9);
         }
     }
 }

@@ -5,54 +5,59 @@ namespace ConsoleApplication1
 {
     public class Warehouse
     {
-        private List<Product> _products;
-        private List<int> _count;
+        private Dictionary<int, Product> _products;
 
         public Warehouse()
         {
-            _products = new List<Product>();
-            _count = new List<int>();
+            _products = new Dictionary<int, Product>();
         }
 
-        public void Deliver(Product name, int count)
+        public void Deliver(Product product, int count)
         {
-            _products.Add(name);
-            _count.Add(count);
+            _products.Add(count, product);
         }
 
-        public void GetAllProducts()
+        public void PrintDeliverProducts()
         {
             if (_products.Count <= 0)
             {
                 Console.WriteLine("There are no products in the warehouse.");
                 return;
             }
-            
-            for (int i = 0; i < _products.Count; i++)
+
+            foreach (var product in _products)
             {
-                Console.WriteLine($"{_products[i].Name}, {_count[i]}");
+                Console.WriteLine($"Product in the warehouse: {product.Value.Name}, quantity: {product.Key}");
             }
         }
 
-        public bool TakeProduct(Product name, int count)
+        public bool TakeProduct(Product product, int count)
         {
-            int buffer;
-            
-            for (int i = 0; i < _products.Count; i++)
+            foreach (var item in _products)
             {
-                if (_products[i].Name == name.Name)
+                if (item.Value == product)
                 {
-                    buffer = _count[i];
-                    _count[i] -= count;
-                    
-                    if (_count[i] <= 0)
-                    {
-                        _count[i] = buffer;
-                        return false;
-                    }
-                    
-                    return true;
+                    return ChangeCountProduct(count, item.Key);
                 }
+            }
+
+            return false;
+        }
+
+        private bool ChangeCountProduct(int count, int productKey)
+        {
+            if (productKey-count == 0)
+            {
+                _products.Remove(productKey);
+                return true;
+            }
+            
+            if (productKey-count > 0)
+            {
+                _products.TryGetValue(productKey, out Product product);
+                _products.Remove(productKey);
+                _products.Add(productKey - count, product);
+                return true;
             }
 
             return false;

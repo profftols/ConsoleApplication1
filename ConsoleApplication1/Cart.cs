@@ -3,20 +3,18 @@ using System.Collections.Generic;
 
 namespace ConsoleApplication1
 {
-    public class Cart
+    public class Cart : ISeller
     {
-        private List<Product> _products;
-        private List<int> _count;
+        private Dictionary<int, Product> _products;
         private Shop _shop;
 
         public Cart(Shop shop)
         {
             _shop = shop;
-            _products = new List<Product>();
-            _count = new List<int>();
+            _products = new Dictionary<int, Product>();
         }
 
-        public void Add(Product name, int count)
+        public void AddShopping(Product product, int count)
         {
             if (count <= 0)
             {
@@ -24,10 +22,9 @@ namespace ConsoleApplication1
                 return;
             }
 
-            if (_shop.PutCart(name, count))
+            if (_shop.PutCart(product, count))
             {
-                _products.Add(name);
-                _count.Add(count);
+                _products.Add(count, product);
             }
             else
             {
@@ -43,17 +40,16 @@ namespace ConsoleApplication1
                 return;
             }
 
-            for (int i = 0; i < _products.Count; i++)
+            foreach (var product in _products)
             {
-                Console.WriteLine($"Product in the shopping cart: {_products[i].Name}, {_count[i]}");
+                Console.WriteLine($"Product in the cart: {product.Value.Name}, quantity: {product.Key}");
             }
         }
 
         public Shop Order()
         {
             _products = null;
-            _count = null;
-
+            Console.WriteLine("Thank you for your order!");
             return _shop;
         }
     }
