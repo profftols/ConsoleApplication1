@@ -11,12 +11,7 @@
 
         public Cart Cart()
         {
-            return new Cart(this);
-        }
-
-        public bool PutCart(Product product, int count)
-        {
-           return _warehouse.TakeProduct(product, count);
+            return new Cart(_warehouse);
         }
     }
 }

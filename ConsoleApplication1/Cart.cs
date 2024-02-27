@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace ConsoleApplication1
 {
-    public class Cart : ISeller
+    public class Cart
     {
-        private Dictionary<int, Product> _products;
-        private Shop _shop;
+        private readonly Dictionary<int, Product> _products;
+        private readonly Item _item;
+        private readonly ISeller _seller;
 
-        public Cart(Shop shop)
+        public Cart(ISeller seller)
         {
-            _shop = shop;
             _products = new Dictionary<int, Product>();
+            _seller = seller;
+            _item = new Item();
         }
 
         public void AddShopping(Product product, int count)
@@ -22,13 +24,13 @@ namespace ConsoleApplication1
                 return;
             }
 
-            if (_shop.PutCart(product, count))
+            if (_seller.TryFindProduct(product, count))
             {
                 _products.Add(count, product);
             }
             else
             {
-                Console.WriteLine("There is no such quantity of goods.");
+                Console.WriteLine("There are no products in the warehouse");
             }
         }
 
@@ -46,11 +48,15 @@ namespace ConsoleApplication1
             }
         }
 
-        public Shop Order()
+        public Item Order()
         {
-            _products = null;
-            Console.WriteLine("Thank you for your order!");
-            return _shop;
+            foreach (var product in _products)
+            {
+                _seller.ChangeCountProduct(product.Value, product.Key);
+            }
+            
+            _products.Clear();
+            return _item;
         }
     }
 }

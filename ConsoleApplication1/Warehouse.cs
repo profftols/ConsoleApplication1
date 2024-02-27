@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ConsoleApplication1
 {
-    public class Warehouse
+    public class Warehouse : ISeller
     {
         private Dictionary<int, Product> _products;
 
@@ -14,7 +14,22 @@ namespace ConsoleApplication1
 
         public void Deliver(Product product, int count)
         {
-            _products.Add(count, product);
+            if (_products.ContainsValue(product))
+            {
+                foreach (var item in _products)
+                {
+                    if (item.Value == product)
+                    {
+                        count += item.Key;
+                        _products.Remove(item.Key);
+                        _products.Add(count, product);
+                    }
+                }
+            }
+            else
+            {
+                _products.Add(count, product);
+            }
         }
 
         public void PrintDeliverProducts()
@@ -31,33 +46,36 @@ namespace ConsoleApplication1
             }
         }
 
-        public bool TakeProduct(Product product, int count)
+        public void ChangeCountProduct(Product product, int count)
         {
             foreach (var item in _products)
             {
                 if (item.Value == product)
                 {
-                    return ChangeCountProduct(count, item.Key);
+                    if (item.Key - count == 0)
+                    {
+                        _products.Remove(item.Key);
+                        return;
+                    }
+
+                    if (item.Key - count > 0)
+                    {
+                        _products.Remove(item.Key);
+                        _products.Add(item.Key - count, product);
+                        return;
+                    }
                 }
             }
-
-            return false;
         }
 
-        private bool ChangeCountProduct(int count, int productKey)
+        public bool TryFindProduct(Product product, int count)
         {
-            if (productKey-count == 0)
+            foreach (var item in _products)
             {
-                _products.Remove(productKey);
-                return true;
-            }
-            
-            if (productKey-count > 0)
-            {
-                _products.TryGetValue(productKey, out Product product);
-                _products.Remove(productKey);
-                _products.Add(productKey - count, product);
-                return true;
+                if (item.Value == product && item.Key >= count)
+                {
+                    return true;
+                }
             }
 
             return false;

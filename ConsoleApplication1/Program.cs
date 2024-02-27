@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace ConsoleApplication1
 {
@@ -24,7 +25,7 @@ namespace ConsoleApplication1
             
             cart.ProductsShopping();
 
-            cart.Order();
+            Console.WriteLine(cart.Order().Paylink);
 
             cart.AddShopping(iPhone12, 9);
         }
